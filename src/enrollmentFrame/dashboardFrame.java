@@ -17,17 +17,17 @@ public class dashboardFrame extends javax.swing.JFrame {
     public dashboardFrame() {
         initComponents();
         adminIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("personIcon.png")).getImage().getScaledInstance(120,120, Image.SCALE_SMOOTH)));
-       dashboardIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("dashboardIcon.png")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH)));
-       transactionIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("transactionIcon.png")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH)));
-       dataIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("dataIcon.png")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH)));
-      maintenanceIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("maintenanceIcon.png")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH)));
-      recordsIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("recordsIcon.png")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH)));
-       settingsIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("settingsIcon.png")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH)));
-      logoutIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("logoutIcon.png")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH)));
-      totalStudentsIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("person1Icon.png")).getImage().getScaledInstance(36,36, Image.SCALE_SMOOTH)));
-        totalEnrolledIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("person1Icon.png")).getImage().getScaledInstance(36,36, Image.SCALE_SMOOTH)));
-        schoolYearIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("schoolYearIcon.png")).getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH)));
-        totalSectionsIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("sectionIcon.png")).getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH)));
+       dashboardIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wdashboardIcon.png")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH)));
+       transactionIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wtransactionIcon.png")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH)));
+       dataIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wdataIcon.png")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH)));
+      maintenanceIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wmaintenanceIcon.png")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH)));
+      recordsIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wrecordsIcon.png")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH)));
+       settingsIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wsettingsIcon.png")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH)));
+      logoutIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wlogoutIcon.png")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH)));
+      totalStudentsIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wperson1Icon.png")).getImage().getScaledInstance(36,36, Image.SCALE_SMOOTH)));
+        totalEnrolledIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wperson1Icon.png")).getImage().getScaledInstance(36,36, Image.SCALE_SMOOTH)));
+        schoolYearIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wschoolYearIcon.png")).getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH)));
+        totalSectionsIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wsectionIcon.png")).getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH)));
       logoMainPanel.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("logo.png")).getImage().getScaledInstance(250,250, Image.SCALE_SMOOTH)));
       
     }
