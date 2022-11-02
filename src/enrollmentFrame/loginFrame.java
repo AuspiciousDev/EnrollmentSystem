@@ -9,19 +9,119 @@ import java.awt.Image;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-/**
- *
- * @author King
- */
+import java.sql.Connection;
+import java.awt.HeadlessException;
+import java.awt.event.KeyEvent;
+import java.beans.Statement;
+import javax.swing.JTextField;
+import java.sql.PreparedStatement;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 public class loginFrame extends javax.swing.JFrame {
 
     /**
      * Creates new form loginFrame
      */
+    private String strUsername;
+    private String strPassword;
+
+    Connection con = null;
+    ResultSet rst = null;
+    PreparedStatement pst = null;
+    String SQL_URL = "jdbc:sqlserver://localhost:1433;user=admin;password=admin123;DatabaseName=ADPEnrollmentSystem;integrated‌​Security=true";
+    String sqlLoginHistory = "INSERT INTO UserLoginHistory (UserID,LoginDate,LoginTime) VALUES (?,?,?)";
+
+    private String perfSetDate() {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime now = LocalDateTime.now();
+        String Date = dtf.format(now);
+
+        return Date;
+    }
+
+    private String perfSetTimeDate() {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("k:m:s ");
+        LocalDateTime now = LocalDateTime.now();
+        String Date = dtf.format(now);
+
+        return Date;
+    }
+
+    public void perfLogin() {
+        strUsername = edtUsername.getText();
+        strPassword = edtPassword.getText();
+        String sql = "SELECT USERS.UserID, EMPLOYEE.FName,USERS.Password,EMPLOYEE.EmpStatus,EMPLOYEE.Position\n"
+                + "FROM USERS LEFT JOIN EMPLOYEE ON EMPLOYEE.UserID =  USERS.UserID  \n"
+                + "WHERE USERS.UserID = ? \n"
+                + "GROUP BY USERS.UserID,EMPLOYEE.FName,USERS.Password,EMPLOYEE.EmpStatus,EMPLOYEE.Position";
+
+        String dbUsername;
+        String dbPassword;
+        String dbEmpStatus;
+        String dbEmpName;
+        String dbPosition;
+        try {
+            con = DriverManager.getConnection(SQL_URL);
+            pst = con.prepareStatement(sql);
+            pst.setString(1, strUsername); // 
+            rst = pst.executeQuery();
+            if (rst.next()) {
+                dbUsername = rst.getString("UserID");
+                dbPassword = rst.getString("Password");
+                if (strPassword.equals(dbPassword)) {
+                    System.out.println("SUCCESS");
+                }
+                dbEmpStatus = rst.getString("EmpStatus");
+                dbEmpName = rst.getString("FName");
+                dbPosition = rst.getString("Position");
+                if (dbEmpStatus.equals("ACTIVE")) {
+                    if (dbPosition.equals("Registrar")) {
+                        con = null;
+                        pst = null;
+                        con = DriverManager.getConnection(SQL_URL);
+                        pst = con.prepareStatement(sqlLoginHistory);
+
+                        pst.setString(1, dbUsername);
+                        pst.setString(2, perfSetDate());
+                        pst.setString(3, perfSetTimeDate());
+                        int y = pst.executeUpdate();
+                        if (y == 1) {
+                            JOptionPane.showMessageDialog(this, "Welcome!\n" + dbEmpName, "Login Notice!", JOptionPane.INFORMATION_MESSAGE);
+                            dashboardFrame frameOne = new dashboardFrame(dbUsername);
+                            loginFrame nextForm = new loginFrame();
+                            nextForm.setVisible(false);
+                            frameOne.setVisible(true);
+                            this.dispose();
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Database Error!!", "Login Error!", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "User account Disabled!!", "Login Error!", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Username not Found");
+            }
+
+        } catch (SQLException | HeadlessException e) {
+            JOptionPane.showMessageDialog(null, "Connection Error = " + e);
+            System.out.println("Connection Error" + e);
+        }
+    }
+
     public loginFrame() {
         initComponents();
-     
-        };
+
+    }
+
+    ;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -40,10 +140,10 @@ public class loginFrame extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jCheckBox1 = new javax.swing.JCheckBox();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
+        btnLogin = new javax.swing.JButton();
+        btnExit = new javax.swing.JButton();
+        edtPassword = new javax.swing.JPasswordField();
+        edtUsername = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -52,6 +152,7 @@ public class loginFrame extends javax.swing.JFrame {
         setResizable(false);
 
         mainPanel.setBackground(new java.awt.Color(30, 81, 40));
+        mainPanel.setPreferredSize(new java.awt.Dimension(1300, 700));
         mainPanel.setLayout(null);
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
@@ -89,31 +190,29 @@ public class loginFrame extends javax.swing.JFrame {
         mainPanel.add(jCheckBox1);
         jCheckBox1.setBounds(460, 440, 19, 19);
 
-        jButton1.setText("CONFIRM");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnLogin.setText("LOGIN");
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnLoginActionPerformed(evt);
             }
         });
-        mainPanel.add(jButton1);
-        jButton1.setBounds(550, 490, 184, 40);
+        mainPanel.add(btnLogin);
+        btnLogin.setBounds(550, 490, 184, 40);
 
-        jButton2.setText("EXIT");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnExit.setText("EXIT");
+        btnExit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnExitActionPerformed(evt);
             }
         });
-        mainPanel.add(jButton2);
-        jButton2.setBounds(550, 550, 184, 40);
+        mainPanel.add(btnExit);
+        btnExit.setBounds(550, 550, 184, 40);
+        mainPanel.add(edtPassword);
+        edtPassword.setBounds(460, 380, 390, 40);
 
-        jTextField1.setToolTipText("Username");
-        mainPanel.add(jTextField1);
-        jTextField1.setBounds(460, 380, 390, 40);
-
-        jTextField3.setToolTipText("Username");
-        mainPanel.add(jTextField3);
-        jTextField3.setBounds(460, 330, 390, 40);
+        edtUsername.setToolTipText("Username");
+        mainPanel.add(edtUsername);
+        edtUsername.setBounds(460, 330, 390, 40);
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/enrollmentFrame/loginBackground.png"))); // NOI18N
         mainPanel.add(jLabel1);
@@ -123,24 +222,26 @@ public class loginFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 1343, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 769, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+        perfLogin();// TODO add your handling code here:
+    }//GEN-LAST:event_btnLoginActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
+        this.dispose();        // TODO add your handling code here:
+    }//GEN-LAST:event_btnExitActionPerformed
 
     /**
      * @param args the command line arguments
@@ -178,8 +279,10 @@ public class loginFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton btnExit;
+    private javax.swing.JButton btnLogin;
+    private javax.swing.JPasswordField edtPassword;
+    private javax.swing.JTextField edtUsername;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -188,8 +291,6 @@ public class loginFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField3;
     private javax.swing.JPanel mainPanel;
     // End of variables declaration//GEN-END:variables
 }

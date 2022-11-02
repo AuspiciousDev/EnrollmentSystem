@@ -8,28 +8,116 @@ import java.awt.Color;
 import java.awt.Image;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.HeadlessException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.Statement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 
 public class dashboardFrame extends javax.swing.JFrame {
+
+    Connection con = null;
+    ResultSet rst = null;
+    PreparedStatement pst = null;
+    Statement stmt = null;
+    PreparedStatement pstUpdate = null;
+
+    String CurrUserID;
+    String dbEmpFULLName;
+
+    String SQL_URL = "jdbc:sqlserver://localhost:1433;user=admin;password=admin123;DatabaseName=ADPEnrollmentSystem;integrated‌​Security=true";
+    String sqlGetUser = "SELECT UserID, FName,MName,LName  FROM EMPLOYEE WHERE UserID = ?";
 
     /**
      * Creates new form dashboardFrame
      */
     public dashboardFrame() {
         initComponents();
-        adminIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("personIcon.png")).getImage().getScaledInstance(120,120, Image.SCALE_SMOOTH)));
-       dashboardIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wdashboardIcon.png")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH)));
-       transactionIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wtransactionIcon.png")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH)));
-       dataIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wdataIcon.png")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH)));
-      maintenanceIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wmaintenanceIcon.png")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH)));
-      recordsIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wrecordsIcon.png")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH)));
-       settingsIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wsettingsIcon.png")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH)));
-      logoutIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wlogoutIcon.png")).getImage().getScaledInstance(22,22, Image.SCALE_SMOOTH)));
-      totalStudentsIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wperson1Icon.png")).getImage().getScaledInstance(36,36, Image.SCALE_SMOOTH)));
-        totalEnrolledIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wperson1Icon.png")).getImage().getScaledInstance(36,36, Image.SCALE_SMOOTH)));
-        schoolYearIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wschoolYearIcon.png")).getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH)));
-        totalSectionsIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wsectionIcon.png")).getImage().getScaledInstance(24,24, Image.SCALE_SMOOTH)));
-      logoMainPanel.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("logo.png")).getImage().getScaledInstance(250,250, Image.SCALE_SMOOTH)));
-      
+        adminIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("personIcon.png")).getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH)));
+        dashboardIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wdashboardIcon.png")).getImage().getScaledInstance(22, 22, Image.SCALE_SMOOTH)));
+        transactionIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wtransactionIcon.png")).getImage().getScaledInstance(22, 22, Image.SCALE_SMOOTH)));
+        dataIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wdataIcon.png")).getImage().getScaledInstance(22, 22, Image.SCALE_SMOOTH)));
+        maintenanceIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wmaintenanceIcon.png")).getImage().getScaledInstance(22, 22, Image.SCALE_SMOOTH)));
+        recordsIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wrecordsIcon.png")).getImage().getScaledInstance(22, 22, Image.SCALE_SMOOTH)));
+        settingsIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wsettingsIcon.png")).getImage().getScaledInstance(22, 22, Image.SCALE_SMOOTH)));
+        logoutIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wlogoutIcon.png")).getImage().getScaledInstance(36, 36, Image.SCALE_SMOOTH)));
+        totalStudentsIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wperson1Icon.png")).getImage().getScaledInstance(36, 36, Image.SCALE_SMOOTH)));
+        totalEnrolledIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wperson1Icon.png")).getImage().getScaledInstance(36, 36, Image.SCALE_SMOOTH)));
+        schoolYearIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wschoolYearIcon.png")).getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH)));
+        totalSectionsIcon.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("wsectionIcon.png")).getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH)));
+        logoMainPanel.setIcon(new ImageIcon(new javax.swing.ImageIcon(getClass().getResource("logo.png")).getImage().getScaledInstance(250, 250, Image.SCALE_SMOOTH)));
+
+    }
+
+    public dashboardFrame(String empID) {
+        initComponents();
+        CurrUserID = empID;
+        getCurrentUserDB();
+
+    }
+
+    private void getCurrentUserDB() {
+        con = null;
+        pst = null;
+        String dbEmpID = "";
+        String dbEmpFName = "";
+        String dbEmpMName = "";
+        String dbEmpLName = "";
+
+        try {
+            con = DriverManager.getConnection(SQL_URL);
+            pst = con.prepareStatement(sqlGetUser);
+            pst.setString(1, CurrUserID); // 
+            rst = pst.executeQuery();
+            while (rst.next()) {
+                CurrUserID = rst.getString("UserID");
+                dbEmpID = rst.getString("UserID");
+                dbEmpFName = rst.getString("FName");
+                dbEmpMName = rst.getString("MName");
+                dbEmpLName = rst.getString("LName");
+
+            }
+            dbEmpFULLName = dbEmpFName + " " + dbEmpMName + " " + dbEmpLName;
+            lblName.setText(dbEmpFULLName);
+            con.close();
+        } catch (SQLException | HeadlessException e) {
+            JOptionPane.showMessageDialog(this, "Nav : Connection Error" + e, "Database Notice", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
@@ -57,9 +145,9 @@ public class dashboardFrame extends javax.swing.JFrame {
         maintenanceIcon = new javax.swing.JLabel();
         recordsIcon = new javax.swing.JLabel();
         settingsIcon = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
         logoutIcon = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
+        lblName = new javax.swing.JLabel();
+        btnLogout1 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -137,18 +225,26 @@ public class dashboardFrame extends javax.swing.JFrame {
         settingsIcon.setFont(new java.awt.Font("SansSerif", 0, 16)); // NOI18N
         settingsIcon.setPreferredSize(new java.awt.Dimension(22, 22));
 
-        jLabel10.setFont(new java.awt.Font("SansSerif", 0, 16)); // NOI18N
-        jLabel10.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel10.setText("LOGOUT");
-
         logoutIcon.setFont(new java.awt.Font("SansSerif", 0, 16)); // NOI18N
-        logoutIcon.setPreferredSize(new java.awt.Dimension(22, 22));
+        logoutIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/enrollmentFrame/logoutIcon.png"))); // NOI18N
+        logoutIcon.setPreferredSize(new java.awt.Dimension(36, 36));
 
-        jLabel12.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel12.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        jLabel12.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel12.setText("Lorem Ipsum Ripsum");
+        lblName.setBackground(new java.awt.Color(255, 255, 255));
+        lblName.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        lblName.setForeground(new java.awt.Color(255, 255, 255));
+        lblName.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblName.setText("Lorem Ipsum Ripsum");
+
+        btnLogout1.setBackground(new java.awt.Color(51, 0, 0));
+        btnLogout1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnLogout1.setForeground(new java.awt.Color(255, 255, 255));
+        btnLogout1.setText("LOGOUT");
+        btnLogout1.setMaximumSize(new java.awt.Dimension(83, 25));
+        btnLogout1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogout1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout sidePanelLayout = new javax.swing.GroupLayout(sidePanel);
         sidePanel.setLayout(sidePanelLayout);
@@ -163,8 +259,9 @@ public class dashboardFrame extends javax.swing.JFrame {
             .addGroup(sidePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sidePanelLayout.createSequentialGroup()
-                        .addGap(0, 29, Short.MAX_VALUE)
+                        .addGap(0, 21, Short.MAX_VALUE)
                         .addGroup(sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sidePanelLayout.createSequentialGroup()
                                 .addComponent(dashboardIcon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -191,10 +288,10 @@ public class dashboardFrame extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sidePanelLayout.createSequentialGroup()
-                                .addComponent(logoutIcon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(logoutIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnLogout1, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(30, 30, 30)))))
                 .addContainerGap())
         );
         sidePanelLayout.setVerticalGroup(
@@ -205,7 +302,7 @@ public class dashboardFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel11)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel12)
+                .addComponent(lblName)
                 .addGap(40, 40, 40)
                 .addGroup(sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sidePanelLayout.createSequentialGroup()
@@ -235,11 +332,11 @@ public class dashboardFrame extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jLabel9))
                     .addComponent(settingsIcon, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 294, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 281, Short.MAX_VALUE)
                 .addGroup(sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(logoutIcon, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(19, 19, 19))
+                    .addComponent(btnLogout1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(logoutIcon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18))
         );
 
         jPanel2.setBackground(new java.awt.Color(102, 204, 255));
@@ -469,6 +566,16 @@ public class dashboardFrame extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnLogout1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogout1ActionPerformed
+        // TODO add your handling code here:
+        dashboardFrame frameOne = new dashboardFrame();
+        loginFrame nextForm = new loginFrame();
+
+        nextForm.setVisible(true);
+        frameOne.setVisible(false);
+        this.dispose();
+    }//GEN-LAST:event_btnLogout1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -506,12 +613,11 @@ public class dashboardFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel adminIcon;
+    private javax.swing.JButton btnLogout1;
     private javax.swing.JLabel dashboardIcon;
     private javax.swing.JLabel dataIcon;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
@@ -527,11 +633,10 @@ public class dashboardFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JLabel lblName;
     private javax.swing.JLabel logoMainPanel;
     private javax.swing.JLabel logoutIcon;
     private javax.swing.JPanel mainPanel;
