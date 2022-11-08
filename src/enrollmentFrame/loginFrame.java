@@ -36,7 +36,7 @@ public class loginFrame extends javax.swing.JFrame {
     ResultSet rst = null;
     PreparedStatement pst = null;
     String SQL_URL = "jdbc:sqlserver://localhost:1433;user=admin;password=admin123;DatabaseName=ADPEnrollmentSystem;integrated‌​Security=true";
-    String sqlLoginHistory = "INSERT INTO UserLoginHistory (UserID,LoginDate,LoginTime) VALUES (?,?,?)";
+    String sqlLoginHistory = "INSERT INTO UserLoginHistory (Username,LoginDate,LoginTime) VALUES (?,?,?)";
 
     private String perfSetDate() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -57,10 +57,10 @@ public class loginFrame extends javax.swing.JFrame {
     public void perfLogin() {
         strUsername = edtUsername.getText();
         strPassword = edtPassword.getText();
-        String sql = "SELECT USERS.UserID, EMPLOYEE.FName,USERS.Password,EMPLOYEE.EmpStatus,EMPLOYEE.Position\n"
-                + "FROM USERS LEFT JOIN EMPLOYEE ON EMPLOYEE.UserID =  USERS.UserID  \n"
-                + "WHERE USERS.UserID = ? \n"
-                + "GROUP BY USERS.UserID,EMPLOYEE.FName,USERS.Password,EMPLOYEE.EmpStatus,EMPLOYEE.Position";
+        String sql = "SELECT USERS.Username, EMPLOYEE.FName,USERS.Password,EMPLOYEE.EmpStatus,EMPLOYEE.EmpType\n"
+                + "FROM USERS LEFT JOIN EMPLOYEE ON EMPLOYEE.EmpID =  USERS.Username  \n"
+                + "WHERE USERS.Username = ? \n"
+                + "GROUP BY USERS.Username,EMPLOYEE.FName,USERS.Password,EMPLOYEE.EmpStatus,EMPLOYEE.EmpType";
 
         String dbUsername;
         String dbPassword;
@@ -73,14 +73,14 @@ public class loginFrame extends javax.swing.JFrame {
             pst.setString(1, strUsername); // 
             rst = pst.executeQuery();
             if (rst.next()) {
-                dbUsername = rst.getString("UserID");
+                dbUsername = rst.getString("Username");
                 dbPassword = rst.getString("Password");
                 if (strPassword.equals(dbPassword)) {
                     System.out.println("SUCCESS");
                 }
                 dbEmpStatus = rst.getString("EmpStatus");
                 dbEmpName = rst.getString("FName");
-                dbPosition = rst.getString("Position");
+                dbPosition = rst.getString("EmpType");
                 if (dbEmpStatus.equals("ACTIVE")) {
                     if (dbPosition.equals("Registrar")) {
                         con = null;
@@ -95,6 +95,48 @@ public class loginFrame extends javax.swing.JFrame {
                         if (y == 1) {
                             JOptionPane.showMessageDialog(this, "Welcome!\n" + dbEmpName, "Login Notice!", JOptionPane.INFORMATION_MESSAGE);
                             dashboardFrame frameOne = new dashboardFrame(dbUsername);
+                            loginFrame nextForm = new loginFrame();
+                            nextForm.setVisible(false);
+                            frameOne.setVisible(true);
+                            this.dispose();
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Database Error!!", "Login Error!", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                    if (dbPosition.equals("Teacher")) {
+                        con = null;
+                        pst = null;
+                        con = DriverManager.getConnection(SQL_URL);
+                        pst = con.prepareStatement(sqlLoginHistory);
+
+                        pst.setString(1, dbUsername);
+                        pst.setString(2, perfSetDate());
+                        pst.setString(3, perfSetTimeDate());
+                        int y = pst.executeUpdate();
+                        if (y == 1) {
+                            JOptionPane.showMessageDialog(this, "Welcome!\n" + dbEmpName, "Login Notice!", JOptionPane.INFORMATION_MESSAGE);
+                            teacherForm frameOne = new teacherForm();
+                            loginFrame nextForm = new loginFrame();
+                            nextForm.setVisible(false);
+                            frameOne.setVisible(true);
+                            this.dispose();
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Database Error!!", "Login Error!", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                    if (dbPosition.equals("Staff")) {
+                        con = null;
+                        pst = null;
+                        con = DriverManager.getConnection(SQL_URL);
+                        pst = con.prepareStatement(sqlLoginHistory);
+
+                        pst.setString(1, dbUsername);
+                        pst.setString(2, perfSetDate());
+                        pst.setString(3, perfSetTimeDate());
+                        int y = pst.executeUpdate();
+                        if (y == 1) {
+                            JOptionPane.showMessageDialog(this, "Welcome!\n" + dbEmpName, "Login Notice!", JOptionPane.INFORMATION_MESSAGE);
+                            staffForm frameOne = new staffForm();
                             loginFrame nextForm = new loginFrame();
                             nextForm.setVisible(false);
                             frameOne.setVisible(true);
