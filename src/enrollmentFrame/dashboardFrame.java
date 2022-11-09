@@ -64,11 +64,14 @@ public class dashboardFrame extends javax.swing.JFrame {
     String sqlEmpAdd = "INSERT INTO EMPLOYEE(EmpID,FName,MName,LName,EmpType,EmpStatus) VALUES (?,?,?,?,?,?)";
     String sqlUserAdd = "INSERT INTO USERS(Username,Password) VALUES (?,?)";
 
+    String sqlAllGetEmp = "SELECT USERS.Username, EMPLOYEE.FName,EMPLOYEE.MName,EMPLOYEE.LName,EMPLOYEE.EmpType,EMPLOYEE.EmpStatus\n"
+            + "FROM USERS LEFT JOIN EMPLOYEE ON EMPLOYEE.EmpID = USERS.Username ";
     String sqlGetEmp = "SELECT USERS.Username, EMPLOYEE.FName,EMPLOYEE.MName,EMPLOYEE.LName,EMPLOYEE.EmpType,EMPLOYEE.EmpStatus\n"
             + "FROM USERS LEFT JOIN EMPLOYEE ON EMPLOYEE.EmpID = ?  ";
     String sqlPatchEmployee = "UPDATE EMPLOYEE SET FName =? ,MName = ?,LName=?, EmpType =?,EmpStatus = ? WHERE EmpID =?";
     String sqlPatchPassword = "UPDATE USERS SET Password = ? WHERE Username =?";
 
+    
     /**
      * Creates new form dashboardFrame
      */
@@ -93,6 +96,7 @@ public class dashboardFrame extends javax.swing.JFrame {
 
     }
 
+    
     static String createRandomPassword(int n) {
 
         // chose a Character random from this String
@@ -230,7 +234,7 @@ public class dashboardFrame extends javax.swing.JFrame {
         modelEmpTable.setRowCount(0);
         try {
             con = DriverManager.getConnection(SQL_URL);
-            pst = con.prepareStatement(sqlGetEmp);
+            pst = con.prepareStatement(sqlAllGetEmp);
             rst = pst.executeQuery();
             while (rst.next()) {
                 String empID = rst.getString("Username");
@@ -421,7 +425,7 @@ public class dashboardFrame extends javax.swing.JFrame {
         settingsIcon2 = new javax.swing.JLabel();
         btnUserSettings = new javax.swing.JButton();
         contentPanel = new javax.swing.JPanel();
-        dashPanel = new javax.swing.JPanel();
+        dashboardPanel = new javax.swing.JPanel();
         userPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableEmp = new javax.swing.JTable();
@@ -514,6 +518,8 @@ public class dashboardFrame extends javax.swing.JFrame {
         jTable4 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMaximumSize(new java.awt.Dimension(1920, 1080));
+        setPreferredSize(new java.awt.Dimension(1600, 900));
 
         sidePanel.setBackground(new java.awt.Color(153, 153, 153));
         sidePanel.setPreferredSize(new java.awt.Dimension(250, 800));
@@ -791,20 +797,18 @@ public class dashboardFrame extends javax.swing.JFrame {
 
         contentPanel.setLayout(new java.awt.CardLayout());
 
-        dashPanel.setBackground(new java.awt.Color(153, 255, 255));
-
-        javax.swing.GroupLayout dashPanelLayout = new javax.swing.GroupLayout(dashPanel);
-        dashPanel.setLayout(dashPanelLayout);
-        dashPanelLayout.setHorizontalGroup(
-            dashPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1343, Short.MAX_VALUE)
+        javax.swing.GroupLayout dashboardPanelLayout = new javax.swing.GroupLayout(dashboardPanel);
+        dashboardPanel.setLayout(dashboardPanelLayout);
+        dashboardPanelLayout.setHorizontalGroup(
+            dashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1317, Short.MAX_VALUE)
         );
-        dashPanelLayout.setVerticalGroup(
-            dashPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 829, Short.MAX_VALUE)
+        dashboardPanelLayout.setVerticalGroup(
+            dashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 795, Short.MAX_VALUE)
         );
 
-        contentPanel.add(dashPanel, "card2");
+        contentPanel.add(dashboardPanel, "card7");
 
         userPanel.setBackground(new java.awt.Color(204, 204, 204));
 
@@ -942,7 +946,7 @@ public class dashboardFrame extends javax.swing.JFrame {
                                 .addComponent(txtMName, javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(comboEmpStatus, javax.swing.GroupLayout.Alignment.LEADING, 0, 250, Short.MAX_VALUE)))))
-                .addContainerGap(525, Short.MAX_VALUE))
+                .addContainerGap(511, Short.MAX_VALUE))
         );
         addUsersPanelLayout.setVerticalGroup(
             addUsersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1093,7 +1097,7 @@ public class dashboardFrame extends javax.swing.JFrame {
                                     .addComponent(txtMName1, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(comboEmpStatusUp, javax.swing.GroupLayout.Alignment.LEADING, 0, 250, Short.MAX_VALUE))
-                                .addGap(0, 525, Short.MAX_VALUE))
+                                .addGap(0, 511, Short.MAX_VALUE))
                             .addGroup(updateUsersPanelLayout.createSequentialGroup()
                                 .addComponent(jLabel19)
                                 .addGap(186, 186, 186))))))
@@ -1151,12 +1155,8 @@ public class dashboardFrame extends javax.swing.JFrame {
                 .addGap(17, 17, 17)
                 .addComponent(jLabel1)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, userPanelLayout.createSequentialGroup()
-                .addGap(6, 6, 6)
-                .addGroup(userPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1)
-                    .addComponent(jTabbedPane1))
-                .addContainerGap())
+            .addComponent(jScrollPane1)
+            .addComponent(jTabbedPane1)
         );
         userPanelLayout.setVerticalGroup(
             userPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1164,8 +1164,8 @@ public class dashboardFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE)
+                .addGap(0, 0, 0)
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 396, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -1177,7 +1177,7 @@ public class dashboardFrame extends javax.swing.JFrame {
         transPanel.setLayout(transPanelLayout);
         transPanelLayout.setHorizontalGroup(
             transPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1343, Short.MAX_VALUE)
+            .addGap(0, 1320, Short.MAX_VALUE)
             .addGroup(transPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(transPanelLayout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
@@ -1186,7 +1186,7 @@ public class dashboardFrame extends javax.swing.JFrame {
         );
         transPanelLayout.setVerticalGroup(
             transPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 829, Short.MAX_VALUE)
+            .addGap(0, 795, Short.MAX_VALUE)
             .addGroup(transPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(transPanelLayout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
@@ -1202,11 +1202,11 @@ public class dashboardFrame extends javax.swing.JFrame {
         dataPanel.setLayout(dataPanelLayout);
         dataPanelLayout.setHorizontalGroup(
             dataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1343, Short.MAX_VALUE)
+            .addComponent(jTabbedPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1317, Short.MAX_VALUE)
         );
         dataPanelLayout.setVerticalGroup(
             dataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 829, Short.MAX_VALUE)
+            .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 795, Short.MAX_VALUE)
         );
 
         contentPanel.add(dataPanel, "card2");
@@ -1298,7 +1298,9 @@ public class dashboardFrame extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel25)
-                            .addComponent(txtFNamesett, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(106, 106, 106)
+                                .addComponent(txtFNamesett, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel26)
@@ -1350,13 +1352,13 @@ public class dashboardFrame extends javax.swing.JFrame {
                     .addComponent(jLabel25)
                     .addComponent(jLabel26))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtLNamesett, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtFNamesett, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtMNamesett, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(32, 32, 32)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtLNamesett, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtFNamesett, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtMNamesett, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(32, 32, 32)
                         .addComponent(jLabel20)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel27)
@@ -1366,7 +1368,7 @@ public class dashboardFrame extends javax.swing.JFrame {
                         .addComponent(jLabel28)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtNewPasswordsett, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel29)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtConfPasswordsett, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -1389,7 +1391,7 @@ public class dashboardFrame extends javax.swing.JFrame {
             .addGroup(userSettingsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 70, Short.MAX_VALUE))
+                .addGap(0, 36, Short.MAX_VALUE))
         );
 
         contentPanel.add(userSettings, "card2");
@@ -1408,13 +1410,13 @@ public class dashboardFrame extends javax.swing.JFrame {
         studentPanel.setLayout(studentPanelLayout);
         studentPanelLayout.setHorizontalGroup(
             studentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 1331, Short.MAX_VALUE)
+            .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 1305, Short.MAX_VALUE)
         );
         studentPanelLayout.setVerticalGroup(
             studentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(studentPanelLayout.createSequentialGroup()
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 359, Short.MAX_VALUE))
+                .addGap(0, 325, Short.MAX_VALUE))
         );
 
         recordsPane.addTab("Students", studentPanel);
@@ -1433,13 +1435,13 @@ public class dashboardFrame extends javax.swing.JFrame {
         subjectPanel.setLayout(subjectPanelLayout);
         subjectPanelLayout.setHorizontalGroup(
             subjectPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 1331, Short.MAX_VALUE)
+            .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 1305, Short.MAX_VALUE)
         );
         subjectPanelLayout.setVerticalGroup(
             subjectPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(subjectPanelLayout.createSequentialGroup()
                 .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 359, Short.MAX_VALUE))
+                .addGap(0, 325, Short.MAX_VALUE))
         );
 
         recordsPane.addTab("Subjects", subjectPanel);
@@ -1477,13 +1479,13 @@ public class dashboardFrame extends javax.swing.JFrame {
         panelSY.setLayout(panelSYLayout);
         panelSYLayout.setHorizontalGroup(
             panelSYLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1343, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1317, Short.MAX_VALUE)
         );
         panelSYLayout.setVerticalGroup(
             panelSYLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelSYLayout.createSequentialGroup()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 371, Short.MAX_VALUE))
+                .addGap(0, 337, Short.MAX_VALUE))
         );
 
         maintenancePane.addTab("School Year", panelSY);
@@ -1502,13 +1504,13 @@ public class dashboardFrame extends javax.swing.JFrame {
         panelDeparment.setLayout(panelDeparmentLayout);
         panelDeparmentLayout.setHorizontalGroup(
             panelDeparmentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1343, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1317, Short.MAX_VALUE)
         );
         panelDeparmentLayout.setVerticalGroup(
             panelDeparmentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelDeparmentLayout.createSequentialGroup()
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 371, Short.MAX_VALUE))
+                .addGap(0, 337, Short.MAX_VALUE))
         );
 
         maintenancePane.addTab("Depatment", panelDeparment);
@@ -1527,13 +1529,13 @@ public class dashboardFrame extends javax.swing.JFrame {
         panelLevels.setLayout(panelLevelsLayout);
         panelLevelsLayout.setHorizontalGroup(
             panelLevelsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1343, Short.MAX_VALUE)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1317, Short.MAX_VALUE)
         );
         panelLevelsLayout.setVerticalGroup(
             panelLevelsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelLevelsLayout.createSequentialGroup()
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 371, Short.MAX_VALUE))
+                .addGap(0, 337, Short.MAX_VALUE))
         );
 
         maintenancePane.addTab("Levels", panelLevels);
@@ -1552,13 +1554,13 @@ public class dashboardFrame extends javax.swing.JFrame {
         panelSections.setLayout(panelSectionsLayout);
         panelSectionsLayout.setHorizontalGroup(
             panelSectionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 1343, Short.MAX_VALUE)
+            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 1317, Short.MAX_VALUE)
         );
         panelSectionsLayout.setVerticalGroup(
             panelSectionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelSectionsLayout.createSequentialGroup()
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 371, Short.MAX_VALUE))
+                .addGap(0, 337, Short.MAX_VALUE))
         );
 
         maintenancePane.addTab("Sections", panelSections);
@@ -1583,11 +1585,11 @@ public class dashboardFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(sidePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(contentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(contentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 1317, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(sidePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 829, Short.MAX_VALUE)
+            .addComponent(sidePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 795, Short.MAX_VALUE)
             .addComponent(contentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
@@ -1621,7 +1623,7 @@ public class dashboardFrame extends javax.swing.JFrame {
 
     private void btnDashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDashboardActionPerformed
         contentPanel.removeAll();
-        contentPanel.add(dashPanel);
+        contentPanel.add(dashboardPanel);
         contentPanel.repaint();
         contentPanel.revalidate();        // TODO add your handling code here:
     }//GEN-LAST:event_btnDashboardActionPerformed
@@ -1796,8 +1798,8 @@ public class dashboardFrame extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> comboEmpType;
     private javax.swing.JComboBox<String> comboEmpTypeUp;
     private javax.swing.JPanel contentPanel;
-    private javax.swing.JPanel dashPanel;
     private javax.swing.JLabel dashboardIcon;
+    private javax.swing.JPanel dashboardPanel;
     private javax.swing.JLabel dataIcon;
     private javax.swing.JPanel dataPanel;
     private javax.swing.JLabel jLabel1;

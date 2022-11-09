@@ -116,7 +116,7 @@ public class staffForm extends javax.swing.JFrame {
     private void resetPassword() {
         String currPass = txtCurrPassword.getText();
         String newPass = txtNewPassword.getText();
-        String confPass = txtConfPassword.getText();
+        String confPass = txtLName4.getText();
         if (newPass.equals(confPass)) {
             try {
                 con = DriverManager.getConnection(SQL_URL);
@@ -200,7 +200,7 @@ public class staffForm extends javax.swing.JFrame {
         jLabel18 = new javax.swing.JLabel();
         txtNewPassword = new javax.swing.JTextField();
         jLabel19 = new javax.swing.JLabel();
-        txtConfPassword = new javax.swing.JTextField();
+        txtLName4 = new javax.swing.JTextField();
         btnEmpUpdateResetPassword = new javax.swing.JButton();
         txtEmpStatus = new javax.swing.JTextField();
         txtEmpType = new javax.swing.JTextField();
@@ -293,7 +293,7 @@ public class staffForm extends javax.swing.JFrame {
         btnRecords.setBackground(new java.awt.Color(51, 51, 51));
         btnRecords.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnRecords.setForeground(new java.awt.Color(255, 255, 255));
-        btnRecords.setText("RECORDS AND REPORTS");
+        btnRecords.setText("RECORDS");
         btnRecords.setMaximumSize(new java.awt.Dimension(113, 25));
         btnRecords.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -484,8 +484,8 @@ public class staffForm extends javax.swing.JFrame {
         jLabel19.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel19.setText("Confirm Password");
 
-        txtConfPassword.setToolTipText("asdasdasdas");
-        txtConfPassword.setPreferredSize(new java.awt.Dimension(60, 22));
+        txtLName4.setToolTipText("asdasdasdas");
+        txtLName4.setPreferredSize(new java.awt.Dimension(60, 22));
 
         btnEmpUpdateResetPassword.setBackground(new java.awt.Color(0, 0, 0));
         btnEmpUpdateResetPassword.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -534,7 +534,7 @@ public class staffForm extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel19)
-                            .addComponent(txtConfPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(txtLName4, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(btnEmpUpdateResetPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(txtEmpID, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -588,7 +588,7 @@ public class staffForm extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel19)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtConfPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtLName4, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(btnEmpUpdateResetPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(232, Short.MAX_VALUE))
@@ -750,13 +750,13 @@ public class staffForm extends javax.swing.JFrame {
     private javax.swing.JPanel sidePanel;
     private javax.swing.JLabel tLblCurrType;
     private javax.swing.JLabel transactionIcon;
-    private javax.swing.JTextField txtConfPassword;
     private javax.swing.JTextField txtCurrPassword;
     private javax.swing.JTextField txtEmpID;
     private javax.swing.JTextField txtEmpStatus;
     private javax.swing.JTextField txtEmpType;
     private javax.swing.JTextField txtFName;
     private javax.swing.JTextField txtLName;
+    private javax.swing.JTextField txtLName4;
     private javax.swing.JTextField txtMName;
     private javax.swing.JTextField txtNewPassword;
     private javax.swing.JPanel userPanel;
