@@ -24,7 +24,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
+import java.awt.FlowLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
+
 public class loginFrame extends javax.swing.JFrame {
+
+    File file = new File(System.getProperty("user.home") + "/Documents/save.txt");
 
     /**
      * Creates new form loginFrame
@@ -37,6 +49,59 @@ public class loginFrame extends javax.swing.JFrame {
     PreparedStatement pst = null;
     String SQL_URL = "jdbc:sqlserver://localhost:1433;user=admin;password=admin123;DatabaseName=ADPEnrollmentSystem;integrated‌​Security=true";
     String sqlLoginHistory = "INSERT INTO UserLoginHistory (Username,LoginDate,LoginTime) VALUES (?,?,?)";
+
+    public void SAVE() {      //Save the UserName and Password (for one user)
+
+        try {
+            if (!file.exists()) {
+                file.createNewFile();  //if the file !exist create a new one
+            }
+            BufferedWriter bw = new BufferedWriter(new FileWriter(file.getAbsolutePath()));
+            bw.write(edtUsername.getText()); //write the name
+            bw.newLine(); //leave a new Line
+            bw.write(edtPassword.getPassword()); //write the password
+            bw.close(); //close the BufferdWriter
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }//End Of Save
+
+    public void DELETE() {
+        try {
+            //file to be delete  
+            if (file.exists()) {
+                if (file.delete()) //returns Boolean value  
+                {
+                    System.out.println(file.getName() + " deleted");   //getting and printing the file name  
+                } else {
+                    System.out.println("failed");
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void UPDATE() { //UPDATE ON OPENING THE APPLICATION
+
+        try {
+            if (file.exists()) {    //if this file exists
+
+                Scanner scan = new Scanner(file);   //Use Scanner to read the File
+
+                edtUsername.setText(scan.nextLine());  //append the text to name field
+                edtPassword.setText(scan.nextLine()); //append the text to password field
+                scan.close();
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }//End OF UPDATE
 
     private String perfSetDate() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -67,6 +132,11 @@ public class loginFrame extends javax.swing.JFrame {
         String dbEmpStatus;
         String dbEmpName;
         String dbPosition;
+        if (loginRemember.isSelected()) {
+            SAVE();
+        } else {
+            DELETE();
+        }
         try {
             con = DriverManager.getConnection(SQL_URL);
             pst = con.prepareStatement(sql);
@@ -115,7 +185,7 @@ public class loginFrame extends javax.swing.JFrame {
                         int y = pst.executeUpdate();
                         if (y == 1) {
                             JOptionPane.showMessageDialog(this, "Welcome!\n" + dbEmpName, "Login Notice!", JOptionPane.INFORMATION_MESSAGE);
-                            teacherForm frameOne = new teacherForm();
+                            teacherForm frameOne = new teacherForm(dbUsername);
                             loginFrame nextForm = new loginFrame();
                             nextForm.setVisible(false);
                             frameOne.setVisible(true);
@@ -136,7 +206,7 @@ public class loginFrame extends javax.swing.JFrame {
                         int y = pst.executeUpdate();
                         if (y == 1) {
                             JOptionPane.showMessageDialog(this, "Welcome!\n" + dbEmpName, "Login Notice!", JOptionPane.INFORMATION_MESSAGE);
-                            staffForm frameOne = new staffForm();
+                            staffForm frameOne = new staffForm(dbUsername);
                             loginFrame nextForm = new loginFrame();
                             nextForm.setVisible(false);
                             frameOne.setVisible(true);
@@ -160,7 +230,7 @@ public class loginFrame extends javax.swing.JFrame {
 
     public loginFrame() {
         initComponents();
-
+        UPDATE();
     }
 
     ;
@@ -181,7 +251,7 @@ public class loginFrame extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        loginRemember = new javax.swing.JCheckBox();
         btnLogin = new javax.swing.JButton();
         btnExit = new javax.swing.JButton();
         edtPassword = new javax.swing.JPasswordField();
@@ -229,9 +299,11 @@ public class loginFrame extends javax.swing.JFrame {
         jLabel7.setText("ACADEMIA DE PULILAN");
         mainPanel.add(jLabel7);
         jLabel7.setBounds(350, 120, 590, 90);
-        mainPanel.add(jCheckBox1);
-        jCheckBox1.setBounds(460, 440, 19, 19);
+        mainPanel.add(loginRemember);
+        loginRemember.setBounds(460, 440, 19, 19);
 
+        btnLogin.setBackground(new java.awt.Color(204, 204, 204));
+        btnLogin.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnLogin.setText("LOGIN");
         btnLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -239,8 +311,10 @@ public class loginFrame extends javax.swing.JFrame {
             }
         });
         mainPanel.add(btnLogin);
-        btnLogin.setBounds(550, 490, 184, 40);
+        btnLogin.setBounds(460, 490, 390, 40);
 
+        btnExit.setBackground(new java.awt.Color(204, 204, 204));
+        btnExit.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnExit.setText("EXIT");
         btnExit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -248,7 +322,7 @@ public class loginFrame extends javax.swing.JFrame {
             }
         });
         mainPanel.add(btnExit);
-        btnExit.setBounds(550, 550, 184, 40);
+        btnExit.setBounds(460, 550, 390, 40);
         mainPanel.add(edtPassword);
         edtPassword.setBounds(460, 380, 390, 40);
 
@@ -258,7 +332,7 @@ public class loginFrame extends javax.swing.JFrame {
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/enrollmentFrame/loginBackground.png"))); // NOI18N
         mainPanel.add(jLabel1);
-        jLabel1.setBounds(0, 0, 1400, 770);
+        jLabel1.setBounds(0, 0, 1340, 770);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -325,7 +399,6 @@ public class loginFrame extends javax.swing.JFrame {
     private javax.swing.JButton btnLogin;
     private javax.swing.JPasswordField edtPassword;
     private javax.swing.JTextField edtUsername;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -333,6 +406,7 @@ public class loginFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JCheckBox loginRemember;
     private javax.swing.JPanel mainPanel;
     // End of variables declaration//GEN-END:variables
 }
